@@ -1,6 +1,6 @@
 // 歌手分类
 
-/* 
+/*
     categoryCode 取值
     入驻歌手 5001
     华语男歌手 1001
@@ -23,16 +23,16 @@
 */
 
 module.exports = (query, request) => {
-  const data = {
-    categoryCode: query.cat || '1001',
-    // initial: (query.initial || '').toUpperCase().charCodeAt() || '',
-    initial: isNaN(query.initial) ? (query.initial || '').toUpperCase().charCodeAt() || undefined : query.initial,
-    offset: query.offset || 0,
-    limit: query.limit || 30,
-    total: true
-  }
-  return request(
-    'POST', `https://music.163.com/weapi/artist/list`, data,
-    {crypto: 'weapi', cookie: query.cookie, proxy: query.proxy}
-  )
+    const data = {
+        categoryCode: query.cat || '1001',
+        // initial: (query.initial || '').toUpperCase().charCodeAt() || '',
+        initial: isNaN(query.initial) ? (query.initial || '').toUpperCase().charCodeAt() || undefined : query.initial,
+        offset: query.offset || 0,
+        limit: query.limit || 30,
+        total: true
+    }
+    return request(
+        'POST', `https://music.163.com/weapi/artist/list`, data,
+        {crypto: 'weapi', cookie: query.cookie, proxy: query.proxy}
+    )
 }
