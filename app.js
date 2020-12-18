@@ -6,7 +6,7 @@ const request = require('./util/request')
 const cache = require('apicache').middleware
 
 
-const app = express()
+const app = express();
 
 // CORS & Preflight request
 app.use((req, res, next) => {
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     req.cookies = {}, (req.headers.cookie || '').split(/\s*;\s*/).forEach(pair => {
         let crack = pair.indexOf('=')
-        if (crack < 1 || crack == pair.length - 1) return
+        if (crack < 1 || crack === pair.length - 1) return
         req.cookies[decodeURIComponent(pair.slice(0, crack)).trim()] = decodeURIComponent(pair.slice(crack + 1)).trim()
     })
     next()
@@ -43,9 +43,6 @@ app.use(cache('2 minutes', ((req, res) => res.statusCode === 200)))
 app.use(express.static(path.join(__dirname, 'public')))
 
 
-// 注册获取用户唯一标识的接口
-
-
 // router
 const special = {
     'daily_signin.js': '/daily_signin',
@@ -55,7 +52,9 @@ const special = {
 
 fs.readdirSync(path.join(__dirname, 'module')).reverse().forEach(file => {
     // console.log(file);
-    if (!file.endsWith('.js')) return;
+    if (!file.endsWith('.js')) {
+        return;
+    }
     // album_newest.js  ---> /album_newest.js ---> /album_newest ---> /album/newest
     let route = (file in special) ? special[file] : '/' + file.replace(/\.js$/i, '').replace(/_/g, '/')
     let question = require(path.join(__dirname, 'module', file))
@@ -74,7 +73,9 @@ fs.readdirSync(path.join(__dirname, 'module')).reverse().forEach(file => {
             })
             .catch(answer => {
                 console.log('[ERR]', decodeURIComponent(req.originalUrl))
-                if (answer.body.code == '301') answer.body.msg = '需要登录'
+                if (answer.body.code === 301) {
+                    answer.body.msg = '需要登录';
+                }
                 res.append('Set-Cookie', answer.cookie)
                 res.status(answer.status).send(answer.body)
             })
